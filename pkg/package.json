@@ -1,0 +1,20 @@
+{
+  "name": "azmon_transform_wasm",
+  "type": "module",
+  "collaborators": [
+    "Observability Agents Team"
+  ],
+  "description": "Shared components for Azure Monitor observability agents",
+  "version": "0.1.0",
+  "license": "PROPRIETARY",
+  "files": [
+    "azmon_transform_wasm_bg.wasm",
+    "azmon_transform_wasm.js",
+    "azmon_transform_wasm.d.ts"
+  ],
+  "main": "azmon_transform_wasm.js",
+  "types": "azmon_transform_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
