@@ -2,31 +2,31 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>AzMon Transform Validation WASM Example</title>
+  <meta charset="UTF-8">
+  <title>AzMon Transform Validation WASM Example</title>
 
-    <script type="module">
-        import init, { validate } from './pkg/azmon_transform_wasm.js';
+  <script type="module">
+    import init, { validate } from './pkg/azmon_transform_wasm.js';
 
-        await init();
-        console.log("azmon_transform_wasm initialized");
+    await init();
+    console.log("azmon_transform_wasm initialized");
 
-        window.click_validate = () => {
-            let dcr = document.getElementById("dcr_text").value;
-            let resp = validate(dcr);
-            let pretty = JSON.stringify(JSON.parse(resp), null, 2);
-            document.getElementById("results").textContent = pretty;
-        }
-    </script>
+    window.click_validate = () => {
+      let dcr = document.getElementById("dcr_text").value;
+      let resp = validate(dcr);
+      let pretty = JSON.stringify(JSON.parse(resp), null, 2);
+      document.getElementById("results").textContent = pretty;
+    }
+  </script>
 </head>
 
 <body>
-    <script>
-        function example(num) {
-            let json = "{}";
-            switch (num) {
-                case 1:
-                    json = `
+  <script>
+    function example(num) {
+      let json = "{}";
+      switch (num) {
+        case 1:
+          json = `
 {
   "properties": {
     "transformations": [
@@ -40,11 +40,12 @@
     ]
   }
 }
-                    `;
-                    json = JSON.stringify(JSON.parse(json), null, 2);
-                    break;
-                case 2:
-                    json = `
+          `;
+          json = JSON.stringify(JSON.parse(json), null, 2);
+          break;
+
+        case 2:
+          json = `
 {
   "properties": {
     "transformations": [
@@ -120,46 +121,75 @@
     ]
   }
 }
-                    `;
-                    json = JSON.stringify(JSON.parse(json), null, 2);
-                    break;
-                case 3:
-                    json = '{ "Hello" }';
-                    break;
-                case 4:
-                    json = '{ "Hello" }';
-                    break;
-                case 5:
-                    json = '{ "Hello" }';
-                    break;
+          `;
+          json = JSON.stringify(JSON.parse(json), null, 2);
+          break;
+
+        case 3:
+          json = `
+{
+    "properties": {
+        "transformations": [
+            {
+                "name": "Test",
+                "headerProcessor": {
+                    "processor": "header.SysLog"
+                },
+                "processors": [
+                    {
+                        "processor": "parse.CEF",
+                        "properties": {
+                            "name": "Message",
+                            "cef_paths": [
+                                "duser",
+                                "Host"
+                            ],
+                            "column_prefix": "CEF_"
+                        }
+                    }
+                ]
             }
+        ]
+    }
+}
+`;
+          break;
 
-            let dcr_text = document.getElementById("dcr_text");
-            dcr_text.value = json;
-        }
-    </script>
+        case 4:
+          json = '{ "Hello" }';
+          break;
 
-    <h1>AzMon Transform Validation</h1>
-    <div style="display: flex;">
-        <span style="width: 50%">
-            Input DCR: (examples: 
-            <a href="#" onclick="example(1);">1</a>
-            <a href="#" onclick="example(2);">2</a>
-            <a href="#" onclick="example(3);">3</a>
-            <a href="#" onclick="example(4);">4</a>
-            <a href="#" onclick="example(5);">5</a>
-            )
-            <br />
-            <textarea id="dcr_text" style="width: 99%" rows="50"></textarea>
-        </span>
-        <span style="width: 50%">
-            Output:<br />
-            <textarea id="results" style="width: 99%; background-color: lightgray;" rows="50" readonly></textarea>
-        </span>
-    </div>
-    <div style="padding: 2px;">
-        <button onclick="click_validate();">Validate</button>
-    </div>
+        case 5:
+          json = '{ "Hello" }';
+          break;
+      }
+
+      let dcr_text = document.getElementById("dcr_text");
+      dcr_text.value = json;
+    }
+  </script>
+
+  <h1>AzMon Transform Validation</h1>
+  <div style="display: flex;">
+    <span style="width: 50%">
+      Input DCR: (examples:
+      <a href="#" onclick="example(1);">1</a>
+      <a href="#" onclick="example(2);">2</a>
+      <a href="#" onclick="example(3);">3</a>
+      <a href="#" onclick="example(4);">4</a>
+      <a href="#" onclick="example(5);">5</a>
+      )
+      <br />
+      <textarea id="dcr_text" style="width: 99%" rows="50"></textarea>
+    </span>
+    <span style="width: 50%">
+      Output:<br />
+      <textarea id="results" style="width: 99%; background-color: lightgray;" rows="50" readonly></textarea>
+    </span>
+  </div>
+  <div style="padding: 2px;">
+    <button onclick="click_validate();">Validate</button>
+  </div>
 </body>
 
 </html>
