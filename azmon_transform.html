@@ -70,7 +70,7 @@
                 {
                   "name": "CounterValue",
                   "renameAs": "Value",
-                  "typeAs": "integer"
+                  "typeAs": "int"
                 }
               ]
             }
@@ -146,6 +146,18 @@
                             ],
                             "column_prefix": "CEF_"
                         }
+                    },
+                    {
+                        "processor": "parse.JSON",
+                        "properties": {
+                            "name": "Message",
+                            "extract": [
+                                {
+                                    "name": "Message",
+                                    "renameAs": "Message_JSON"
+                                }
+                            ]
+                        }
                     }
                 ]
             }
@@ -153,10 +165,56 @@
     }
 }
 `;
+          json = JSON.stringify(JSON.parse(json), null, 2);
           break;
 
         case 4:
-          json = '{ "Hello" }';
+          json = `
+{
+    "properties": {
+        "streamDeclarations": {
+            "Custom-MyLogFileFormat": {
+                "columns": [
+                    {
+                        "name": "TimeGenerated",
+                        "type": "datetime"
+                    },
+                    {
+                        "name": "FilePath",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Code",
+                        "type": "int"
+                    },
+                    {
+                        "name": "Module",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Message",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "transformations": [
+            {
+                "name": "Test",
+                "headerProcessor": {
+                    "processor": "header.CustomStream",
+                    "properties": {
+                        "schema": "Custom-MyLogFileFormat"
+                    }
+                },
+                "processors": [
+                ]
+            }
+        ]
+    }
+}
+`;
+          json = JSON.stringify(JSON.parse(json), null, 2);
           break;
 
         case 5:
