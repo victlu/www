@@ -57,19 +57,19 @@
         "processors": [
           {
             "processor": "map.Drop",
-            "properties": {
-              "drop": [
+            "configuration": {
+              "columnNames": [
                 "Counter"
               ]
             }
           },
           {
             "processor": "map.Rename",
-            "properties": {
-              "rename": [
+            "configuration": {
+              "all": [
                 {
-                  "name": "CounterValue",
-                  "renameAs": "Value",
+                  "columnName": "CounterValue",
+                  "nameAs": "Value",
                   "typeAs": "int"
                 }
               ]
@@ -77,13 +77,13 @@
           },
           {
             "processor": "filter.Basic",
-            "properties": {
+            "configuration": {
               "any": [
                 {
                   "all": [
                     {
-                      "name": "CounterName",
-                      "op": "contains",
+                      "columnName": "CounterName",
+                      "operator": "contains",
                       "value": "name_of_counter1"
                     }
                   ]
@@ -91,8 +91,8 @@
                 {
                   "all": [
                     {
-                      "name": "Value",
-                      "op": ">",
+                      "columnName": "Value",
+                      "operator": ">",
                       "value": "10"
                     }
                   ]
@@ -102,15 +102,15 @@
           },
           {
             "processor": "aggregate.Basic",
-            "properties": {
+            "configuration": {
               "aggregates": [
                 {
-                  "name": "sum_of_value",
-                  "op": "sum",
-                  "col": "Value"
+                  "columnName": "Value",
+                  "operator": "sum",
+                  "nameAs": "sum_of_value"
                 }
               ],
-              "dimensions": [
+              "dimensionColumns": [
                 "CounterName",
                 "Instance"
               ]
@@ -137,24 +137,28 @@
                 },
                 "processors": [
                     {
-                        "processor": "parse.CEF",
-                        "properties": {
-                            "name": "Message",
-                            "cef_paths": [
-                                "duser",
-                                "Host"
-                            ],
-                            "column_prefix": "CEF_"
+                        "processor": "parse.CEFAttribute",
+                        "configuration": {
+                            "columnName": "Message",
+                            "all": [
+                                {
+                                  "columnName": "duser",
+                                  "nameAs": "CEF_duser"
+                                },
+                                {
+                                  "columnName": "Host"
+                                }
+                            ]
                         }
                     },
                     {
-                        "processor": "parse.JSON",
-                        "properties": {
-                            "name": "Message",
-                            "extract": [
+                        "processor": "parse.JsonPath",
+                        "configuration": {
+                            "columnName": "Message",
+                            "all": [
                                 {
-                                    "name": "Message",
-                                    "renameAs": "Message_JSON"
+                                    "columnName": "Message",
+                                    "nameAs": "Message_JSON"
                                 }
                             ]
                         }
@@ -203,8 +207,8 @@
                 "name": "Test",
                 "headerProcessor": {
                     "processor": "header.CustomStream",
-                    "properties": {
-                        "schema": "Custom-MyLogFileFormat"
+                    "configuration": {
+                        "schemaId": "Custom-MyLogFileFormat"
                     }
                 },
                 "processors": [
