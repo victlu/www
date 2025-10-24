@@ -17,6 +17,12 @@
       let pretty = JSON.stringify(JSON.parse(resp), null, 2);
       document.getElementById("results").textContent = pretty;
     }
+
+    window.click_validate = () => {
+      let resp = get_metadata(dcr);
+      let pretty = JSON.stringify(JSON.parse(resp), null, 2);
+      document.getElementById("results").textContent = pretty;
+    }
   </script>
 </head>
 
@@ -251,6 +257,7 @@
   </div>
   <div style="padding: 2px;">
     <button onclick="click_validate();">Validate</button>
+    <button onclick="click_metadata();">GetMetadata</button>
   </div>
 </body>
 
