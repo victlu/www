@@ -19,7 +19,7 @@
     }
 
     window.click_metadata = () => {
-      let resp = get_metadata(dcr);
+      let resp = get_metadata();
       let pretty = JSON.stringify(JSON.parse(resp), null, 2);
       document.getElementById("results").textContent = pretty;
     }
