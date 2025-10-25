@@ -6,7 +6,7 @@
   <title>AzMon Transform Validation WASM Example</title>
 
   <script type="module">
-    import init, { validate } from './pkg/azmon_transform_wasm.js';
+    import init, { validate, get_metadata } from './pkg/azmon_transform_wasm.js';
 
     await init();
     console.log("azmon_transform_wasm initialized");
@@ -14,6 +14,12 @@
     window.click_validate = () => {
       let dcr = document.getElementById("dcr_text").value;
       let resp = validate(dcr);
+      let pretty = JSON.stringify(JSON.parse(resp), null, 2);
+      document.getElementById("results").textContent = pretty;
+    }
+
+    window.click_metadata = () => {
+      let resp = get_metadata();
       let pretty = JSON.stringify(JSON.parse(resp), null, 2);
       document.getElementById("results").textContent = pretty;
     }
@@ -251,6 +257,7 @@
   </div>
   <div style="padding: 2px;">
     <button onclick="click_validate();">Validate</button>
+    <button onclick="click_metadata();">GetMetadata</button>
   </div>
 </body>
 
