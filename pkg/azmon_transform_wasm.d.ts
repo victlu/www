@@ -1,6 +1,99 @@
 /* tslint:disable */
 /* eslint-disable */
-export function validate(dcr_json: string): string;
+/**
+ * Validate transformation processors in a json string.
+ *
+ * * `transformation_json` - A json formatted string.
+ * * Returns a json formatted string.
+ *
+ * The `transformation_json` json formatted string has the following form:
+ *
+ * ```jsonc
+ * {
+ *   "properties": {
+ *     "streamDeclarations": {
+ *       // streamDeclarations may be referenced for schemas
+ *       "...stream-name...": {
+ *         // See spec
+ *       }
+ *     },
+ *     "transformations": [
+ *       // Validation will occur for this section
+ *       {
+ *         "name": "...transform_name...",
+ *         "headerProcessor": {
+ *           // See spec
+ *         },
+ *         "processors": {
+ *           // See spec
+ *         }
+ *       }
+ *     ]
+ *   }
+ * }
+ * ```
+ *
+ * The returned json formatted string has the following form:
+ *
+ * ```jsonc
+ * {
+ *   "transforms": [
+ *     {
+ *       "name": "...transform_name...",
+ *       "processors": [
+ *         {
+ *            "name": "...processor name...",  // See spec
+ *            "kql": "...Rendered KQL snippet...",  // See spec
+ *            "schema": [
+ *              // See spec
+ *            ],
+ *            "logs": [
+ *              // See spec
+ *            ]
+ *         }
+ *       ]
+ *     }
+ *   ],
+ *   "logs": [
+ *     // See spec
+ *   ]
+ * }
+ * ```
+ *
+ * Specification:
+ * [Validation Library for AzMon Transform DCR](https://github.com/aep-health-and-standards/Telemetry-Collection-Spec/blob/main/ObservabilityAgents-Shared-Components/AzMon-Transformation/validation-lib.md)
+ */
+export function validate(transformation_json: string): string;
+/**
+ * Get validation metadata json formatted string.
+ *
+ * * Returns a json formatted string containing metadata.
+ *
+ * The returned json formatted string has the following form:
+ *
+ * ```jsonc
+ * {
+ *   // Special case "_metadata" key
+ *   "_metadata": {
+ *     // Compile time of this component
+ *     "compileTime": "2025-12-22T20:05:14Z"
+ *   },
+ *   // All valid processors
+ *   "...processor_name...": {
+ *     "configuration": {
+ *       // Template used by validation libary to drive validating processor configuration.
+ *     },
+ *     // Optional list of valid locations
+ *     "locations": [
+ *       // See spec
+ *     ]
+ *   }
+ * }
+ * ```
+ *
+ * Specification:
+ * [Validation Library for AzMon Transform DCR](https://github.com/aep-health-and-standards/Telemetry-Collection-Spec/blob/main/ObservabilityAgents-Shared-Components/AzMon-Transformation/validation-lib.md)
+ */
 export function get_metadata(): string;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
