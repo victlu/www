@@ -6,17 +6,6 @@ heap.push(undefined, null, true, false);
 
 function getObject(idx) { return heap[idx]; }
 
-let heap_next = heap.length;
-
-function addHeapObject(obj) {
-    if (heap_next === heap.length) heap.push(heap.length + 1);
-    const idx = heap_next;
-    heap_next = heap[idx];
-
-    heap[idx] = obj;
-    return idx;
-}
-
 let cachedUint8ArrayMemory0 = null;
 
 function getUint8ArrayMemory0() {
@@ -45,6 +34,17 @@ function decodeText(ptr, len) {
 function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return decodeText(ptr, len);
+}
+
+let heap_next = heap.length;
+
+function addHeapObject(obj) {
+    if (heap_next === heap.length) heap.push(heap.length + 1);
+    const idx = heap_next;
+    heap_next = heap[idx];
+
+    heap[idx] = obj;
+    return idx;
 }
 
 function dropObject(idx) {
@@ -291,16 +291,8 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbg_getTime_6bb3f64e0f18f817 = function(arg0) {
-        const ret = getObject(arg0).getTime();
-        return ret;
-    };
     imports.wbg.__wbg_log_6c7b5f4f00b8ce3f = function(arg0) {
         console.log(getObject(arg0));
-    };
-    imports.wbg.__wbg_new0_b0a0a38c201e6df5 = function() {
-        const ret = new Date();
-        return addHeapObject(ret);
     };
     imports.wbg.__wbg_wbindgenthrow_451ec1a8469d7eb6 = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
