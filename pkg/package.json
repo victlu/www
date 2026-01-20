@@ -5,7 +5,7 @@
     "Observability Agents Team"
   ],
   "description": "Shared components for Azure Monitor observability agents",
-  "version": "0.1.0",
+  "version": "0.1.278",
   "license": "PROPRIETARY",
   "files": [
     "azmon_transform_wasm_bg.wasm",
