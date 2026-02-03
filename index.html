@@ -6,7 +6,7 @@
   <title>AzMon Transform Validation WASM Example</title>
 
   <script type="module">
-    import init, { validate } from './pkg/azmon_transform_wasm.js';
+    import init, { validate, get_metadata } from './pkg/azmon_transform_wasm.js';
 
     await init();
     console.log("azmon_transform_wasm initialized");
@@ -14,6 +14,12 @@
     window.click_validate = () => {
       let dcr = document.getElementById("dcr_text").value;
       let resp = validate(dcr);
+      let pretty = JSON.stringify(JSON.parse(resp), null, 2);
+      document.getElementById("results").textContent = pretty;
+    }
+
+    window.click_metadata = () => {
+      let resp = get_metadata();
       let pretty = JSON.stringify(JSON.parse(resp), null, 2);
       document.getElementById("results").textContent = pretty;
     }
@@ -34,6 +40,13 @@
         "name": "Example 1",
         "headerProcessor": {
           "processor": "header.WindowsPerformanceCounters"
+        },
+        "processors": []
+      },
+      {
+        "name": "Example 2",
+        "headerProcessor": {
+          "processor": "header.WindowsFirewallLog"
         },
         "processors": []
       }
@@ -57,33 +70,33 @@
         "processors": [
           {
             "processor": "map.Drop",
-            "properties": {
-              "drop": [
+            "configuration": {
+              "columnNames": [
                 "Counter"
               ]
             }
           },
           {
             "processor": "map.Rename",
-            "properties": {
-              "rename": [
+            "configuration": {
+              "all": [
                 {
-                  "name": "CounterValue",
-                  "renameAs": "Value",
-                  "typeAs": "integer"
+                  "columnName": "CounterValue",
+                  "nameAs": "Value",
+                  "typeAs": "int"
                 }
               ]
             }
           },
           {
             "processor": "filter.Basic",
-            "properties": {
+            "configuration": {
               "any": [
                 {
                   "all": [
                     {
-                      "name": "CounterName",
-                      "op": "contains",
+                      "columnName": "CounterName",
+                      "operator": "contains",
                       "value": "name_of_counter1"
                     }
                   ]
@@ -91,8 +104,8 @@
                 {
                   "all": [
                     {
-                      "name": "Value",
-                      "op": ">",
+                      "columnName": "Value",
+                      "operator": ">",
                       "value": "10"
                     }
                   ]
@@ -102,15 +115,15 @@
           },
           {
             "processor": "aggregate.Basic",
-            "properties": {
+            "configuration": {
               "aggregates": [
                 {
-                  "name": "sum_of_value",
-                  "op": "sum",
-                  "col": "Value"
+                  "columnName": "Value",
+                  "operator": "sum",
+                  "nameAs": "sum_of_value"
                 }
               ],
-              "dimensions": [
+              "dimensionColumns": [
                 "CounterName",
                 "Instance"
               ]
@@ -137,14 +150,31 @@
                 },
                 "processors": [
                     {
-                        "processor": "parse.CEF",
-                        "properties": {
-                            "name": "Message",
-                            "cef_paths": [
-                                "duser",
-                                "Host"
-                            ],
-                            "column_prefix": "CEF_"
+                        "processor": "parse.CEFAttribute",
+                        "configuration": {
+                            "columnName": "Message",
+                            "all": [
+                                {
+                                  "columnName": "duser",
+                                  "nameAs": "CEF_duser"
+                                },
+                                {
+                                  "columnName": "Host",
+                                  "nameAs": "CEF_Host"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "processor": "parse.JsonPath",
+                        "configuration": {
+                            "columnName": "Message",
+                            "all": [
+                                {
+                                    "columnName": "Message",
+                                    "nameAs": "Message_JSON"
+                                }
+                            ]
                         }
                     }
                 ]
@@ -157,7 +187,52 @@
           break;
 
         case 4:
-          json = '{ "Hello" }';
+          json = `
+{
+    "properties": {
+        "streamDeclarations": {
+            "Custom-MyLogFileFormat": {
+                "columns": [
+                    {
+                        "name": "TimeGenerated",
+                        "type": "datetime"
+                    },
+                    {
+                        "name": "FilePath",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Code",
+                        "type": "int"
+                    },
+                    {
+                        "name": "Module",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Message",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "transformations": [
+            {
+                "name": "Test",
+                "headerProcessor": {
+                    "processor": "header.CustomStream",
+                    "configuration": {
+                        "streamId": "Custom-MyLogFileFormat"
+                    }
+                },
+                "processors": [
+                ]
+            }
+        ]
+    }
+}
+`;
+          json = JSON.stringify(JSON.parse(json), null, 2);
           break;
 
         case 5:
@@ -190,6 +265,7 @@
   </div>
   <div style="padding: 2px;">
     <button onclick="click_validate();">Validate</button>
+    <button onclick="click_metadata();">GetMetadata</button>
   </div>
 </body>
 
